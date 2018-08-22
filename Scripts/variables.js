@@ -29,7 +29,7 @@ var ctx = cvs.getContext("2d");
 var TrackOffset = 0;
 var LastOffset = 0;
 var Radius = 0;
-var Corner = 90;
+var Angle = 90;
 var HeroImg = new Image();
 HeroImg.src = "Assets/Hero.png"
 
@@ -45,6 +45,7 @@ var NearestBlock = 0;
 
 
 IsMouseDown = false;
+Clockwise = false;
 
 //______________________________________Consts__________________________________________
 

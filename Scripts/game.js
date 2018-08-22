@@ -10,7 +10,7 @@ function Draw() {
 
     if(IsMouseDown){
         ctx.beginPath();
-        ctx.moveTo(Hero.X, Hero.Y);
+        ctx.moveTo(Hero.X + 31, Hero.Y + 31);
         ctx.lineTo(BlockList[NearestBlock].X, BlockList[NearestBlock].Y + TrackOffset);
         ctx.stroke();
     }
@@ -43,7 +43,6 @@ function DistanceFromHeroToBlock(num) {
 
 function MouseDown() {
     IsMouseDown = true;
-    LastOffset = TrackOffset;
 
     FindNearestBlock();
     Radius = Math.abs(Hero.X - BlockList[NearestBlock].X);
@@ -52,28 +51,56 @@ function MouseDown() {
 function CheckNeedRotation() {
     if ((Math.abs(Hero.X - BlockList[NearestBlock].X) >= (Math.abs(Hero.Y - BlockList[NearestBlock].Y - TrackOffset)))){
         Hero.RoundMoving = true;
-        //Corner =
+        Angle = FindAngle();
+        if (Angle % 360 > 270){
+        	Clockwise = true;
+        } else {
+        	Clockwise = false;
+        }
+
+
+
+    	LastOffset = TrackOffset;
     }
 }
+
+function FindAngle(){
+ 	if (BlockList[NearestBlock].X > Hero.X){
+ 		return(90 - RadToDeg(Math.atan(Math.abs(Hero.Y - BlockList[NearestBlock].Y - TrackOffset)/ Math.abs(BlockList[NearestBlock].X - Hero.X))) + 180);
+ 	} else {
+ 		return(90 - RadToDeg(Math.atan(Math.abs(Hero.Y - BlockList[NearestBlock].Y - TrackOffset)/ Math.abs(Hero.X - BlockList[NearestBlock].X))) + 270);
+ 	}
+
+
+}
+
 
 function MouseUp() {
     IsMouseDown = false;
     Hero.RoundMoving = false;
 }
 
+function RadToDeg(rad){
+	return (rad *180 / Math.PI);
+}
+
 var GameTimer = setInterval( function () {
 
-    if (IsMouseDown){
+    if (IsMouseDown && !Hero.RoundMoving){
         CheckNeedRotation();
     }
 
     if(Hero.RoundMoving){
-        Corner += GAMESPEED;
-        TrackOffset = LastOffset + (Radius * Math.sin(Corner * Math.PI / 180 )) + (BlockList[NearestBlock].Y + LastOffset);
-        Hero.X = Radius * Math.cos(Corner * Math.PI / 180 ) + BlockList[NearestBlock].X;
+    	if(Clockwise){
+        	Angle += GAMESPEED;
+        } else {
+        	Angle -= GAMESPEED;
+        }
+        TrackOffset = LastOffset + (Radius * Math.sin(Angle * Math.PI / 180 )) + (BlockList[NearestBlock].Y + LastOffset);
+        Hero.X = Radius * Math.cos(Angle * Math.PI / 180 ) + BlockList[NearestBlock].X;
     } else {
         TrackOffset += GAMESPEED;
-        Hero.X += GAMESPEED * Math.cos(Corner * Math.PI / 180 );
+        Hero.X += GAMESPEED * Math.cos(Angle * Math.PI / 180 );
     }
     
 
