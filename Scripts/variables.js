@@ -44,9 +44,10 @@ var HighBlock = 4;
 var NearestBlock = 0;
 
 
-IsMouseDown = false;
-Clockwise = false;
+var IsMouseDown = false;
+var Clockwise = false;
 
 //______________________________________Consts__________________________________________
 
-GAMESPEED = 1;
+const GAMESPEED = 1;
+const CENTREOFFSET = 31;

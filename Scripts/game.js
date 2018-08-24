@@ -1,6 +1,6 @@
 function Draw() {
     ctx.clearRect(0, 0, 512, 512);
-    ctx.drawImage(Hero.Img, Hero.X, Hero.Y);
+    ctx.drawImage(Hero.Img, Hero.X - 31, Hero.Y - 31);
     for (let i = 0; i < 5; i++){
         ctx.beginPath();
         ctx.arc(BlockList[i].X ,BlockList[i].Y + TrackOffset,BlockList[i].Radius,0,2*Math.PI);
@@ -10,12 +10,11 @@ function Draw() {
 
     if(IsMouseDown){
         ctx.beginPath();
-        ctx.moveTo(Hero.X + 31, Hero.Y + 31);
+        ctx.moveTo(Hero.X , Hero.Y );
         ctx.lineTo(BlockList[NearestBlock].X, BlockList[NearestBlock].Y + TrackOffset);
         ctx.stroke();
     }
 }
-
 
 function CheckBlocks() {
     for (let i = 0; i < 5; i++){
@@ -23,33 +22,32 @@ function CheckBlocks() {
             BlockList[i] = new Block(getRandom(20 , 500), BlockList[HighBlock].Y - 150);
             HighBlock = i;
         }
-    }
+    }0.
 
 }
 
 function FindNearestBlock() {
     for (let i = 0; i < 5; i++){
-        if (DistanceFromHeroToBlock(i) < DistanceFromHeroToBlock(NearestBlock)||
-            BlockList[NearestBlock].Y + TrackOffset > Hero.Y){
+        if (DistanceFromHeroToBlock(i) < DistanceFromHeroToBlock(NearestBlock) ||
+            (BlockList[NearestBlock].Y + TrackOffset) > Hero.Y ){
             NearestBlock = i;
         }
     }
 }
 
 function DistanceFromHeroToBlock(num) {
-    return(Math.sqrt((BlockList[num].X - Hero.X)^2 + (BlockList[num].Y + TrackOffset - Hero.Y)^2));
+    return(Math.sqrt(Math.pow((BlockList[num].X - (Hero.X )),2) + Math.pow(((BlockList[num].Y + TrackOffset) - (Hero.Y )),2)));
 }
-
 
 function MouseDown() {
     IsMouseDown = true;
 
     FindNearestBlock();
-    Radius = Math.abs(Hero.X - BlockList[NearestBlock].X);
+    Radius = Math.abs(Hero.X  - BlockList[NearestBlock].X);
 }
 
 function CheckNeedRotation() {
-    if ((Math.abs(Hero.X - BlockList[NearestBlock].X) >= (Math.abs(Hero.Y - BlockList[NearestBlock].Y - TrackOffset)))){
+    if ((Math.abs(Hero.X  - BlockList[NearestBlock].X) >= (Math.abs(Hero.Y - (BlockList[NearestBlock].Y + TrackOffset))))){
         Hero.RoundMoving = true;
         Angle = FindAngle();
         if (Angle % 360 > 270){
@@ -57,23 +55,17 @@ function CheckNeedRotation() {
         } else {
         	Clockwise = false;
         }
-
-
-
     	LastOffset = TrackOffset;
     }
 }
 
 function FindAngle(){
- 	if (BlockList[NearestBlock].X > Hero.X){
- 		return(90 - RadToDeg(Math.atan(Math.abs(Hero.Y - BlockList[NearestBlock].Y - TrackOffset)/ Math.abs(BlockList[NearestBlock].X - Hero.X))) + 180);
+ 	if (BlockList[NearestBlock].X > Hero.X ){
+ 		return(90 - RadToDeg(Math.atan((Math.abs((Hero.Y ) - (BlockList[NearestBlock].Y + TrackOffset)))/(Math.abs(BlockList[NearestBlock].X - (Hero.X ))))))+ 180;
  	} else {
- 		return(90 - RadToDeg(Math.atan(Math.abs(Hero.Y - BlockList[NearestBlock].Y - TrackOffset)/ Math.abs(Hero.X - BlockList[NearestBlock].X))) + 270);
+        return(90 - RadToDeg(Math.atan((Math.abs((Hero.Y ) - (BlockList[NearestBlock].Y + TrackOffset)))/(Math.abs(BlockList[NearestBlock].X - (Hero.X ))))))+ 270;
  	}
-
-
 }
-
 
 function MouseUp() {
     IsMouseDown = false;
@@ -81,7 +73,11 @@ function MouseUp() {
 }
 
 function RadToDeg(rad){
-	return (rad *180 / Math.PI);
+	return rad *180 / Math.PI;
+}
+
+function DegToRad(deg) {
+    return deg * Math.PI / 180;
 }
 
 var GameTimer = setInterval( function () {
@@ -96,17 +92,12 @@ var GameTimer = setInterval( function () {
         } else {
         	Angle -= GAMESPEED;
         }
-        TrackOffset = LastOffset + (Radius * Math.sin(Angle * Math.PI / 180 )) + (BlockList[NearestBlock].Y + LastOffset);
-        Hero.X = Radius * Math.cos(Angle * Math.PI / 180 ) + BlockList[NearestBlock].X;
+        TrackOffset = LastOffset + (Radius * Math.sin(DegToRad(Angle))) + (BlockList[NearestBlock].Y + LastOffset);
+        Hero.X = BlockList[NearestBlock].X  +  (Radius * Math.cos(DegToRad(Angle)));
     } else {
         TrackOffset += GAMESPEED;
         Hero.X += GAMESPEED * Math.cos(Angle * Math.PI / 180 );
     }
-    
-
-
-
-
 
     CheckBlocks();
     Draw();
