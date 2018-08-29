@@ -22,10 +22,11 @@ function CheckBlocks() {
             BlockList[i] = new Block(getRandom(20 , 500), BlockList[HighBlock].Y - 150);
             HighBlock = i;
         }
-    }0.
-
+    }
 }
 
+//TODO
+//Incorrect finding of near point
 function FindNearestBlock() {
     for (let i = 0; i < 5; i++){
         if (DistanceFromHeroToBlock(i) < DistanceFromHeroToBlock(NearestBlock) ||
@@ -36,7 +37,8 @@ function FindNearestBlock() {
 }
 
 function DistanceFromHeroToBlock(num) {
-    return(Math.sqrt(Math.pow((BlockList[num].X - (Hero.X )),2) + Math.pow(((BlockList[num].Y + TrackOffset) - (Hero.Y )),2)));
+    return(Math.sqrt(Math.pow((BlockList[num].X - (Hero.X )),2) +
+        Math.pow(((BlockList[num].Y + TrackOffset) - (Hero.Y )),2)));
 }
 
 function MouseDown() {
@@ -92,14 +94,19 @@ var GameTimer = setInterval( function () {
         } else {
         	Angle -= GAMESPEED;
         }
+        //TODO
+        //Incorrect TrackOffset && Hero.X
         TrackOffset = LastOffset + (Radius * Math.sin(DegToRad(Angle))) + (BlockList[NearestBlock].Y + LastOffset);
         Hero.X = BlockList[NearestBlock].X  +  (Radius * Math.cos(DegToRad(Angle)));
     } else {
+
+        //TODO
+        //Fix endless TrackOffset
         TrackOffset += GAMESPEED;
-        Hero.X += GAMESPEED * Math.cos(Angle * Math.PI / 180 );
+        Hero.X += GAMESPEED * Math.cos(Angle * Math.PI / 180);
     }
 
     CheckBlocks();
     Draw();
-}, 1000 / 120 )
+}, 1000 / 120 );
 

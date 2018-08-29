@@ -31,10 +31,13 @@ var LastOffset = 0;
 var Radius = 0;
 var Angle = 90;
 var HeroImg = new Image();
-HeroImg.src = "Assets/Hero.png"
+HeroImg.src = "Assets/Hero.png";
 
 var Hero = new Player();
 var BlockList = new Array(5);
+
+//TODO
+//Bad part of code)0
 let y = -150;
     for (let i = 0; i < 5; i++){
         BlockList[i] = new Block( getRandom(20, 512), y);
